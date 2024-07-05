@@ -10,6 +10,7 @@ class Task {
   }
 }
 
+
 class TaskManager {
   constructor() {
     this.tasks = JSON.parse(localStorage.getItem("tasks")) || [];

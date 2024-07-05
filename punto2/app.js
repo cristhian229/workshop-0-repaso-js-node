@@ -72,12 +72,7 @@ class Task {
           item.className = task.completed ? "completed" : "";
           item.addEventListener("click", () => this.toggleTaskComplete(task.id));
       
-          if (task.completed) {
-            const label = document.createElement("span");
-            label.textContent = "importante";
-            label.style.fontWeight = "bold";
-            item.appendChild(label);
-          }
+         
       
           const updateButton = document.createElement("button");
           updateButton.textContent = "Actualizar Nota";
@@ -100,6 +95,12 @@ class Task {
           item.appendChild(deleteButton);
           item.appendChild(updateButton);
           item.appendChild(toggleButton);
+          if (task.completed) {
+            const label = document.createElement("span");
+            label.textContent = "importante";
+            label.style.fontWeight = "bold";
+            item.append(label);
+          }
       
           taskList.appendChild(item);
         });
