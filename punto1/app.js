@@ -14,12 +14,19 @@ class TaskManager {
   constructor() {
     this.tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     this.loadTasks();
+    this.idForUpdate = null;
   }
 
   addTask(description) {
-    const id = this.tasks.length ? this.tasks[this.tasks.length - 1].id + 1 : 1;
+    const id = this.idForUpdate ? this.idForUpdate : this.tasks.length ? this.tasks[this.tasks.length - 1].id + 1 : 1;
     const task = new Task(id, description);
-    this.tasks.push(task);
+    if (this.idForUpdate) {
+      const taskForUpdateIndex = this.tasks.findIndex((task) => task.id === this.idForUpdate)
+      this.tasks.splice(taskForUpdateIndex, 1, task)
+    } else {
+      this.tasks.push(task);
+    }
+    this.idForUpdate = null;
     this.saveTasks();
     this.renderTasks();
   }
@@ -31,24 +38,17 @@ class TaskManager {
   }
 
   updateTask(id) {
-    this.tasks = this.tasks.filter((task) => task.id !== id);
-    const task = new Task(id, description);
-    this.tasks.push(task);
-    this.saveTasks();
-    this.renderTasks();
+    const taskForUpdate = this.tasks.find((task) => task.id === id)
+    this.idForUpdate = taskForUpdate.id
+    document.querySelector('#new-task').value = taskForUpdate.description;
   }
 
   toggleTaskComplete(id) {
     const task = this.tasks.find((task) => task.id === id);
     if (task) {
-      const taskInstantiated = new Task(
-        task.id,
-        task.description,
-        task.completed
-      );
-      console.log("antes",taskInstantiated);
-      taskInstantiated.toggleComplete();
-      console.log("despues",taskInstantiated);
+      console.log("antes",task);
+      task.toggleComplete();
+      console.log("despues",task);
 
       this.saveTasks();
       this.renderTasks();
@@ -81,13 +81,7 @@ class TaskManager {
 
       const toggleButton = document.createElement("input");
       toggleButton.setAttribute("type", "checkbox");
-      toggleButton.addEventListener("change", (e) => {
-        this.checked;
-        e.stopPropagation();
-        
-
-        
-      });
+      toggleButton.checked = task.completed;
 
       const deleteButton = document.createElement("button");
       deleteButton.textContent = "Eliminar";
